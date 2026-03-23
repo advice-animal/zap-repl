@@ -37,7 +37,7 @@ jobs:
         run: |
           git config --global user.name "Unit Test"
           git config --global user.email "example@example.com"
-          if [[ "$RUNNER_OS" == "Linux" ]]; then sudo sysctl -w kernel.yama.ptrace_scope=0; fi
+          if [[ "$RUNNER_OS" == "Linux" ]]; then sudo sysctl -w kernel.yama.ptrace_scope=1; fi
           make test
       - name: Lint
         run: |
