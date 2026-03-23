@@ -20,7 +20,7 @@ def _explain_codesign_failure(program: str) -> str:
         "runtime enabled, which blocks Frida from injecting code.",
         "",
         "Use a non-system Python instead:",
-        "  uv python install 3.x  →  zapl $(uv python find 3.x)",
+        "  uv python install 3.x  →  zap_repl $(uv python find 3.x)",
     ]
     return "\n".join(lines)
 

@@ -22,7 +22,7 @@ def test_smoke_nocmd():
             "zap_repl",
             "-c",
             "print('X', 1+1, 2+2)",
-            "python",
+            sys.executable,
         ],
         timeout=5,
     )
@@ -37,7 +37,7 @@ def test_smoke():
             "zap_repl",
             "-c",
             "print('X', 1+1, 2+2)",
-            "python",
+            sys.executable,
             "-c",
             "import time; time.sleep(60)",
         ],
@@ -48,7 +48,15 @@ def test_smoke():
 
 def test_interactive():
     proc = subprocess.Popen(
-        [sys.executable, "-m", "coverage", "run", "-m", "zap_repl", "python"],
+        [
+            sys.executable,
+            "-m",
+            "coverage",
+            "run",
+            "-m",
+            "zap_repl",
+            sys.executable,
+        ],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
     )
