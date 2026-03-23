@@ -1,5 +1,29 @@
 # zap-repl
 
+Lets you run a Python REPL _inside_ another process.  No GDB required.  Works
+across versions.
+
+Usage:
+
+```
+# To run, then attach
+python -m zap_repl /path/to/python foo.py
+
+# To attach to an already-running interpreter
+python -m zap_repl -p <pid>
+
+Python ... on ...
+>>> import os
+>>> print(os.getpid())
+<pid>
+```
+
+You can even have multiple attached concurrently, and they share their vars, as
+well as share vars with an interactive interpreter if there happens to be one.
+
+Doesn't require planning ahead and loading anything in the target process, just
+a normal Python 3.8+ interpreter with stdlib.
+
 
 # Version Compat
 
