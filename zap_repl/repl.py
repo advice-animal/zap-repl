@@ -3,12 +3,12 @@ from __future__ import annotations
 import os
 import sys
 import threading
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 try:
     import readline
 
-    _HISTORY_FILE = os.path.expanduser("~/.zap_repl_history")
+    _HISTORY_FILE: str | None = os.path.expanduser("~/.zap_repl_history")
     try:
         readline.read_history_file(_HISTORY_FILE)
     except FileNotFoundError:
@@ -229,12 +229,12 @@ class Repl:
 
             # Surface any Frida-level script errors (e.g. JS syntax errors)
             # so they aren't swallowed silently.
-            def _on_message(msg: dict, _data: object) -> None:
+            def _on_message(msg: dict[str, Any], _data: bytes | None) -> None:
                 if msg.get("type") == "error":
                     desc = msg.get("description") or str(msg)
                     print(f"[agent error: {desc}]", file=sys.stderr)
 
-            agent.on("message", _on_message)
+            agent.on("message", _on_message)  # type: ignore[call-overload]
             agent.load()
             self._agent = agent
         return self._agent
@@ -246,7 +246,7 @@ class Repl:
         _done: threading.Event | None = None,
     ) -> None:
         agent = self._ensure_agent()
-        result_box: list[dict] = []
+        result_box: list[dict[str, Any]] = []
         exc_box: list[Exception] = []
         done = _done if _done is not None else threading.Event()
 

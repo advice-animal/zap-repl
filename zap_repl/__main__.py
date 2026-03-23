@@ -62,7 +62,7 @@ def main() -> None:
     if args.pid is None and not args.argv:
         parser.error("one of -p PID or PROGRAM is required")
 
-    proc: subprocess.Popen | None = None
+    proc: subprocess.Popen[bytes] | None = None
 
     if args.pid is not None:
         pid = args.pid
@@ -117,7 +117,8 @@ def main() -> None:
         if proc is not None:
             # Close stdin → spawned process gets EOF and can exit cleanly.
             try:
-                proc.stdin.close()
+                if proc.stdin is not None:
+                    proc.stdin.close()
             except OSError:
                 pass
             try:
