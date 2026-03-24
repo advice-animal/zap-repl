@@ -53,9 +53,15 @@ _AGENT_JS = r"""
 
     // Search all loaded modules for a Python C-API export.
     // Returns a NativePointer on success, null if not yet found.
-    // Uses module-instance getExportByName (Frida 16+; the static
-    // Module.findExportByName was removed in Frida 16).
+    //
+    // Frida 16+ provides Module.findGlobalExportByName() which scans .dynsym
+    // directly and works on BOLT-optimised binaries where .gnu.hash is stale.
+    // Fall back to per-module getExportByName() for older Frida.
     function sym(name) {
+        if (typeof Module.findGlobalExportByName === 'function') {
+            var p = Module.findGlobalExportByName(name);
+            return (p && !p.isNull()) ? p : null;
+        }
         var mods = Process.enumerateModules();
         for (var i = 0; i < mods.length; i++) {
             try {
@@ -326,9 +332,10 @@ class Repl:
             return
         print(probe.get("banner", ""))
 
+        _prompt = PROMPT if sys.stdin.isatty() else ""
         while True:
             try:
-                line = input(PROMPT)
+                line = input(_prompt)
             except EOFError:
                 print()
                 break
