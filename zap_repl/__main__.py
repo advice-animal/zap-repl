@@ -104,6 +104,8 @@ def main() -> None:
         sys.exit(1)
     except frida.ProcessNotFoundError:
         print(f"No process with PID {pid} found.", file=sys.stderr)
+        if sys.platform == "linux":
+            print(_explain_attach_failure(pid), file=sys.stderr)
         sys.exit(1)
 
     repl = Repl(session, prefix=args.prefix)
